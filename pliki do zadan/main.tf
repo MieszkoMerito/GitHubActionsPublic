@@ -9,6 +9,8 @@ terraform {
 
 provider "azurerm" {
   features {}
+  # KLUCZOWE USTAWIENIE: Zmusza Terraforma do użycia sesji z azure/login@v2
+  use_cli = true
 }
 
 resource "azurerm_resource_group" "rg" {

@@ -46,18 +46,49 @@ Aby GitHub mógł cokolwiek zrobić w chmurze Azure (np. powołać infrastruktur
 
 **Kroki do wykonania:**
 1. Otwórz portal Azure w przeglądarce i uruchom **Azure Cloud Shell** (ikonka terminala na górnym pasku, wybierz Bash).
-2. Sprawdź swoje ID Subskrypcji wpisując:
-   `az account show --query id -o tsv`
-   *(Skopiuj wyświetlony identyfikator).*
-3. Wygeneruj Service Principal (zastąp `<TWOJE_ID_SUBSKRYPCJI>` skopiowanym ID):
-   `az ad sp create-for-rbac --name "GitHub-Actions-Pipeline" --role contributor --scopes /subscriptions/<TWOJE_ID_SUBSKRYPCJI> --sdk-auth`
-4. Komenda zwróci na ekranie duży obiekt w formacie JSON (zaczynający się od `{` i kończący na `}`). **Skopiuj go w całości.**
-5. Przejdź na stronę swojego repozytorium na GitHubie.
-6. Wejdź w **Settings** -> **Secrets and variables** (w lewym menu) -> **Actions**.
-7. Kliknij zielony przycisk **New repository secret**.
-8. W polu *Name* wpisz dokładnie: `AZURE_CREDENTIALS`
-9. W polu *Secret* wklej skopiowany wcześniej kod JSON.
-10. Kliknij **Add secret**. Twoja automatyzacja ma teraz uprawnienia do Azure!
+2. Zmodyfikuj dwie pierwsze linijki poniższego skryptu, wpisując swój dokładny login GitHub oraz nazwę repozytorium (uwaga na wielkość liter!), a także nazwę brancha, na którym będą wywoływane Github Actions, a następnie wklej i uruchom całość w terminalu:
+
+```bash
+GITHUB_USER="TwójLoginGitHub"
+GITHUB_REPO="NazwaTwojegoRepozytorium"
+GITHUB_BRANCH="NazwaGlownegoBrancha"
+
+# 1. Tworzenie grupy zasobów dla tożsamości
+az group create --name RG-GitHub-Auth --location polandcentral
+
+
+# 2. Tworzenie Tożsamości Zarządzanej (To omija blokady uczelniane!)
+az identity create --name GHA-Identity --resource-group RG-GitHub-Auth
+
+# 3. Pobranie danych do zmiennych
+SUB_ID=$(az account show --query id -o tsv)
+CLIENT_ID=$(az identity show --name GHA-Identity --resource-group RG-GitHub-Auth --query clientId -o tsv)
+TENANT_ID=$(az account show --query tenantId -o tsv)
+
+# 4. Nadanie tożsamości uprawnień (Contributor) do Twojej subskrypcji
+az role assignment create --role contributor --assignee $CLIENT_ID --scope /subscriptions/$SUB_ID
+
+# 5. Konfiguracja Federacji OIDC (Powiązanie tożsamości z Twoim repozytorium na GitHubie)
+az identity federated-credential create \
+  --name GitHub-Federation-Main \
+  --identity-name GHA-Identity \
+  --resource-group RG-GitHub-Auth \
+  --issuer https://token.actions.githubusercontent.com \
+  --subject repo:$GITHUB_USER/$GITHUB_REPO:ref:refs/heads/$GITHUB_BRANCH \
+  --audiences api://AzureADTokenExchange
+
+# 6. Wypisanie danych końcowych
+echo "========================================="
+echo "DODAJ TE 3 WARTOŚCI JAKO SECRETY W GITHUBIE:"
+echo "AZURE_CLIENT_ID: $CLIENT_ID"
+echo "AZURE_TENANT_ID: $TENANT_ID"
+echo "AZURE_SUBSCRIPTION_ID: $SUB_ID"
+echo "========================================="
+
+```
+ 3. Skrypt zwróci Ci na końcu 3 ciągi znaków.
+ 4. Przejdź na GitHuba -> **Settings** -> **Secrets and variables** -> **Actions**.
+ 5. Dodaj 3 nowe sekrety (New repository secret). Ich nazwy muszą być dokładnie takie jak wyżej: AZURE_CLIENT_ID, AZURE_TENANT_ID oraz AZURE_SUBSCRIPTION_ID, a w polach Secret wklej odpowiadające im wygenerowane ciągi.
 
 ---
 

@@ -15,8 +15,7 @@ provider "azurerm" {
 
 resource "azurerm_resource_group" "rg" {
   name     = "RG-DevOps-Lab"
-  location = "westeurope"
-  #location = "polandcentral"
+  location = "polandcentral"
 }
 
 

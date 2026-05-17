@@ -17,7 +17,8 @@ GITHUB_USER="TwójLoginGitHub"
 GITHUB_REPO="NazwaTwojegoRepozytorium"
 
 # 1. Tworzenie grupy zasobów dla tożsamości
-az group create --name RG-GitHub-Auth --location westeurope
+az group create --name RG-GitHub-Auth --location polandcentral
+
 
 # 2. Tworzenie Tożsamości Zarządzanej (To omija blokady uczelniane!)
 az identity create --name GHA-Identity --resource-group RG-GitHub-Auth

@@ -204,3 +204,4 @@ Działający klaster AKS generuje koszty. Pozostawienie go włączonego wyczerpi
 2. Zmodyfikuj komendę w kroku "Budowa infrastruktury" z `terraform apply -auto-approve` na `terraform destroy -auto-approve`.
 3. Zrób Commit, uruchom potok w GitHubie i upewnij się, że infrastruktura została skasowana. Możesz to potwierdzić w Azure Cloud Shell wpisując `az group list`.
 4. Oraz sprwadzić w webie: https://portal.azure.com/#servicemenu/Microsoft_Azure_Resources/ResourceManager/resourcegroups
+5. Jeżeli Twoje reozytorium jest pubiczne najleiej bęzdzie jeżeli w ustawieniach repoytorium zmienić je na prywatne. 

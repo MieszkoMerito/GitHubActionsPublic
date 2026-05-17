@@ -1,0 +1,48 @@
+name: Zadanie 5 - Automatyzacja Terraform
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Terraform_Orchestration:
+    runs-on: ubuntu-latest
+    
+    # Definiujemy zmienne globalne dla Terraforma na poziomie zadania
+    env:
+      ARM_CLIENT_ID: ${{ secrets.AZURE_USERNAME }}
+      ARM_PASSWORD: ${{ secrets.AZURE_PASSWORD }}
+      ARM_TENANT_ID: ${{ secrets.AZURE_TENANT_ID }}
+      ARM_SUBSCRIPTION_ID: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+      # Informujemy dostawcę AzureRM, że logujemy się kontem użytkownika, a nie Service Principal
+      ARM_ENVIRONMENT: "public"
+
+    steps:
+      - name: Pobranie kodu repozytorium
+        uses: actions/checkout@v4
+
+      - name: Zalogowanie do chmury Azure
+        uses: azure/login@v2
+        with:
+          # Konstruujemy poprawny format JSON akceptowany przez azure/login dla kont użytkowników
+          creds: |
+            {
+              "id": "${{ secrets.AZURE_USERNAME }}",
+              "password": "${{ secrets.AZURE_PASSWORD }}",
+              "tenantId": "${{ secrets.AZURE_TENANT_ID }}",
+              "subscriptionId": "${{ secrets.AZURE_SUBSCRIPTION_ID }}"
+            }
+
+      - name: Instalacja i konfiguracja Terraforma
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Inicjalizacja środowiska
+        run: terraform init
+        working-directory: ./terraform
+
+      - name: Walidacja kodu (Formatowanie)
+        run: terraform fmt -check
+        working-directory: ./terraform
+
+      - name: Budowa infrastruktury
+        run: terraform apply -auto-approve
+        working-directory: ./terraform

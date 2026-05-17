@@ -15,7 +15,7 @@ Zaczynamy od napisania najprostszego potoku, aby poznać składnię YAML i archi
 
 **Kroki do wykonania:**
 1. Zaloguj się na swoje konto na GitHubie.
-2. Stwórz nowe, **prywne** repozytorium o nazwie `numerindeksu-lab-gha`.
+2. Stwórz nowe, **publiczne** repozytorium o nazwie `numerindeksu-lab-gha`.
 3. Sklonuj repozytorium na swój komputer przy użyciu **GitHub Desktop** i otwórz je w **VS Code**.
 4. W głównym katalogu repozytorium utwórz foldery: `.github/workflows/` (zwróć uwagę na kropkę na początku `.github`!).
 5. Wewnątrz folderu `workflows` utwórz plik `task1-hello.yml` i wklej do niego kod z Zadania 1.
@@ -127,7 +127,28 @@ Czas przygotować infrastrukturę. Zbudujemy klaster Kubernetes w chmurze Azure.
 W tym zadaniu połączymy kroki budowania obrazu z krokiem aktualizacji kodu na klastrze. Użyjemy najlepszych praktyk: zamiast tagu `:latest`, potok użyje identyfikatora commita (`${{ github.sha }}`), by Kubernetes zawsze wiedział, że ma pobrać nową warstwę. Potok uruchamiany jest ręcznie.
 
 **Kroki do wykonania:**
-0. Upewnij się, że package `python-proxy` ma widoczność `public`. W razie potrzeby zmień widoczność package.
+*Jeżeli Twoje repotorium jest prywatne, upewnij się, że package `python-proxy` ma widoczność `public`. W razie potrzeby zmień widoczność package. Dzięki tej instrukcji*
+Oto instrukcja krok po kroku, jak zmienić widoczność pakietu na publiczną, zaczynając bezpośrednio od strony głównej konkretnego repozytorium użytkownika:
+```
+Krok 1: Wejdź do repozytorium projektu
+   1. Zaloguj się na GitHub.
+   2. Otwórz konkretne repozytorium, w którym znajduje się Twój kod i powiązany z nim pakiet.
+Krok 2: Znajdź sekcję Packages na stronie głównej
+   1. Będąc na głównej stronie repozytorium (zakładka Code), spójrz na prawą kolumnę ekranu.
+   2. Zjedź w dół, mijając sekcje takie jak About, Releases czy Environments.
+   3. Znajdź sekcję Packages i kliknij nazwę pakietu python-proxy (lub ikonę koła zębatego obok niej).
+Krok 3: Przejdź do ustawień pakietu
+   1. Po otwarciu strony pakietu, ponownie spójrz na prawą kolumnę.
+   2. Na samym dole tej kolumny kliknij przycisk Package settings (Ustawienia pakietu).
+Krok 4: Zmień widoczność w strefie "Danger Zone"
+   1. Przewiń nowo otwartą stronę na sam dół, aż zobaczysz sekcję w czerwonej ramce – Danger Zone (Strefa niebezpieczna).
+   2. Przy opcji Change package visibility kliknij przycisk Change visibility.
+Krok 5: Potwierdź zmianę na Public
+   1. W oknie pop-up zaznacz opcję Public.
+   2. GitHub poprosi Cię o potwierdzenie – wpisz w pole tekstowe nazwę pakietu (lub kombinację twój-login/python-proxy, zależnie od tego, co wyświetli instrukcja na ekranie).
+   3. Kliknij przycisk I understand the consequences, change package visibility (Rozumiem konsekwencje, zmień widoczność).
+```
+
 1. Utwórz folder `k8s` w głównym katalogu i dodaj do niego plik `deployment.yaml`.
 2. Wgraj potok `task6-cd.yml` do folderu `.github/workflows/` z dostarczonych materiałów.
 3. W pliku YAML zaktualizuj ścieżkę obrazu na swój profil (DWÓCH miejscach!).

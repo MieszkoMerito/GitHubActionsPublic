@@ -127,6 +127,7 @@ Czas przygotować infrastrukturę. Zbudujemy klaster Kubernetes w chmurze Azure.
 W tym zadaniu połączymy kroki budowania obrazu z krokiem aktualizacji kodu na klastrze. Użyjemy najlepszych praktyk: zamiast tagu `:latest`, potok użyje identyfikatora commita (`${{ github.sha }}`), by Kubernetes zawsze wiedział, że ma pobrać nową warstwę. Potok uruchamiany jest ręcznie.
 
 **Kroki do wykonania:**
+0. Upewnij się, że package `python-proxy` ma widoczność `public`. W razie potrzeby zmień widoczność package.
 1. Utwórz folder `k8s` w głównym katalogu i dodaj do niego plik `deployment.yaml`.
 2. Wgraj potok `task6-cd.yml` do folderu `.github/workflows/` z dostarczonych materiałów.
 3. W pliku YAML zaktualizuj ścieżkę obrazu na swój profil (DWÓCH miejscach!).

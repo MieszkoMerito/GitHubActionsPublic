@@ -14,7 +14,7 @@ Witaj na laboratorium z automatyzacji procesów DevOps! Twoim celem na dzisiejsz
 Zaczynamy od napisania najprostszego potoku, aby poznać składnię YAML i architekturę GitHub Actions. Zadanie to wykonamy w całości na platformie GitHub.
 
 **Kroki do wykonania:**
-1. Zaloguj się na swoje konto na GitHubie. :)
+1. Zaloguj się na swoje konto na GitHubie.
 2. Stwórz nowe, **prywne** repozytorium o nazwie `numerindeksu-lab-gha`.
 3. Sklonuj repozytorium na swój komputer przy użyciu **GitHub Desktop** i otwórz je w **VS Code**.
 4. W głównym katalogu repozytorium utwórz foldery: `.github/workflows/` (zwróć uwagę na kropkę na początku `.github`!).

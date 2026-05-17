@@ -15,7 +15,7 @@ Zaczynamy od napisania najprostszego potoku, aby poznać składnię YAML i archi
 
 **Kroki do wykonania:**
 1. Zaloguj się na swoje konto na GitHubie.
-2. Stwórz nowe, **publiczne** repozytorium o nazwie `numerindeksu-lab-gha`.
+2. Stwórz nowe, **prywne** repozytorium o nazwie `numerindeksu-lab-gha`.
 3. Sklonuj repozytorium na swój komputer przy użyciu **GitHub Desktop** i otwórz je w **VS Code**.
 4. W głównym katalogu repozytorium utwórz foldery: `.github/workflows/` (zwróć uwagę na kropkę na początku `.github`!).
 5. Wewnątrz folderu `workflows` utwórz plik `task1-hello.yml` i wklej do niego kod z Zadania 1.

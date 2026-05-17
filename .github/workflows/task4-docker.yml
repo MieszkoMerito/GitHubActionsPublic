@@ -1,0 +1,32 @@
+name: Zadanie 4 - Publikacja Obrazu Docker (GHCR)
+
+on:
+  workflow_dispatch:
+
+# Uprawnienie potrzebne, aby agent GHA mógł zapisywać paczki do Rejestru GitHuba
+permissions:
+  packages: write
+  contents: read
+
+jobs:
+  Build_and_Push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Pobranie kodu repozytorium
+        uses: actions/checkout@v4
+
+      - name: Logowanie do GitHub Container Registry (GHCR)
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          # Token autoryzacyjny generuje się sam, nie musisz go definiować w Secrets!
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Budowa i Wypchnięcie Obrazu Docker
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src
+          push: true
+          # ZMIEŃ <TWOJ_LOGIN_GITHUB> NA SWÓJ (MAŁYMI LITERAMI!)
+          tags: ghcr.io/mieszkomerito/python-proxy:${{ github.sha }}, ghcr.io/mieszkomerito/python-proxy:latest

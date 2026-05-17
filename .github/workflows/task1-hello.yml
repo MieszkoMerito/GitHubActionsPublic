@@ -1,0 +1,25 @@
+name: Zadanie 1 - Pierwszy Potok (Hello World)
+
+# Trigger (Wyzwalacz): Pozwala uruchomić ten potok ręcznie poprzez UI GitHuba.
+on:
+  workflow_dispatch:
+
+jobs:
+  Moje_Pierwsze_Zadanie:
+    # Określenie agenta (Runnera), na którym zostanie wykonane zadanie
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Przywitanie
+        run: echo "Witaj na laboratorium z GitHub Actions!"
+        
+      - name: Informacje o srodowisku
+        # To polecenie pokaże wersję systemu operacyjnego agenta
+        run: lsb_release -a
+
+  Moje_Drugie_Zadanie:
+    runs-on: ubuntu-latest
+    # Domyślnie to zadanie uruchomi się w TYM SAMYM CZASIE (równolegle) co pierwsze
+    steps:
+      - name: Drugi watek
+        run: echo "Działam całkowicie niezależnie i równolegle na innej maszynie VM!"

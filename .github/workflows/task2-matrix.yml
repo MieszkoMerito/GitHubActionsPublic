@@ -1,0 +1,34 @@
+name: Zadanie 2 - Zaawansowany Potok (Matrix & Outputs)
+
+on:
+  workflow_dispatch:
+
+jobs:
+  Zadanie_A:
+    runs-on: ubuntu-latest
+    outputs:
+      # Definiujemy, że to zadanie "wypluwa" zmienną, którą będzie można użyć wyżej
+      magiczne_slowo: ${{ steps.generuj_dane.outputs.moj_klucz }}
+    steps:
+      - name: Generowanie danych
+        id: generuj_dane
+        # Ekstrakcja danych w locie i wysłanie do globalnego pliku wyjściowego środowiska
+        run: echo "moj_klucz=Zaliczenie2026" >> "$GITHUB_OUTPUT"
+
+  Zadanie_B:
+    # Wykorzystanie grafu zależności - to zadanie czeka aż Zadanie_A zakończy się sukcesem
+    needs: [Zadanie_A]
+    # Używamy strategii Matrycy (Matrix), by uruchomić 3 instancje w jednym momencie
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        
+    runs-on: ${{ matrix.os }}
+    
+    steps:
+      - name: Testowanie miedzyplatformowe
+        run: echo "Uruchomiono na systemie operacyjnym określonym w matrycy."
+        
+      - name: Odczyt danych z Zadania A
+        # Odczytujemy output ze środowiska Zadania A, mimo że jesteśmy na innej fizycznej maszynie!
+        run: echo "Hasło z poprzedniego zadania to ${{ needs.Zadanie_A.outputs.magiczne_slowo }}"

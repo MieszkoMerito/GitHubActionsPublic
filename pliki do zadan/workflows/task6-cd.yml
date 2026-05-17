@@ -1,0 +1,55 @@
+name: Zadanie 6 - Manualne Wdrożenie E2E
+
+on:
+  workflow_dispatch:
+
+permissions:
+  packages: write
+  contents: read
+
+jobs:
+  Build_and_Push:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Logowanie do GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+          
+      - name: Build and push
+        uses: docker/build-push-action@v5
+        with:
+          context: ./src
+          push: true
+          # UWAGA: Edytuj poniższy login
+          tags: ghcr.io/<nazwa_uzytkownika>/python-proxy:${{ github.sha }}
+
+  Deploy_to_Kubernetes:
+    needs: [Build_and_Push]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Zalogowanie do chmury Azure
+        uses: azure/login@v2
+        with:
+          creds: ${{ secrets.AZURE_CREDENTIALS }}
+          
+      - name: Konfiguracja kontekstu Kubernetes (Pobranie poświadczeń AKS)
+        uses: azure/aks-set-context@v3
+        with:
+          resource-group: RG-DevOps-Lab
+          cluster-name: aks-devops-lab
+          
+      - name: Aplikacja manifestów do klastra
+        run: |
+          kubectl apply -f ./k8s/deployment.yaml
+          
+      - name: Dynamiczna podmiana obrazu (Rolling Update)
+        # UWAGA: Edytuj poniższy login
+        run: |
+          kubectl set image deployment/python-proxy-deployment python-proxy=ghcr.io/<nazwa_uzytkownika>/python-proxy:${{ github.sha }}

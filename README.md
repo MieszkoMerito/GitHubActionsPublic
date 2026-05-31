@@ -65,8 +65,14 @@ SUB_ID=$(az account show --query id -o tsv)
 CLIENT_ID=$(az identity show --name GHA-Identity --resource-group RG-GitHub-Auth --query clientId -o tsv)
 TENANT_ID=$(az account show --query tenantId -o tsv)
 
+echo "Czekam 20 sekund na replikację tożsamości w Azure..."
+sleep 20
+
 # 4. Nadanie tożsamości uprawnień (Contributor) do Twojej subskrypcji
 az role assignment create --role contributor --assignee $CLIENT_ID --scope /subscriptions/$SUB_ID
+
+echo "Dodatkowy sleep 5 sekund..."
+sleep 5
 
 # 5. Konfiguracja Federacji OIDC (Powiązanie tożsamości z Twoim repozytorium na GitHubie)
 az identity federated-credential create \
